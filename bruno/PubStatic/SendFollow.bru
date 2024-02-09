@@ -1,0 +1,17 @@
+meta {
+  name: SendFollow
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/inbox
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Context": ""
+  }
+}

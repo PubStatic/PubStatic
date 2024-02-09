@@ -1,6 +1,11 @@
 package activityPub
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+)
 
 func GetActor(host string, preferredUsername string, name string, summary string, publicKeyPem string) Actor {
 
@@ -53,4 +58,28 @@ type PublicKey struct {
 	Id           string
 	Owner        string
 	PublicKeyPem string
+}
+
+func GetForeignActor(actorId string) (*Actor, error) {
+	// Send an HTTP GET request
+	response, err := http.Get(actorId)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(io.Reader(response.Body))
+	if err != nil {
+		return nil, err
+	}
+
+	// Unmarshal the JSON response into an Actor struct
+	var actor Actor
+	err = json.Unmarshal(body, &actor)
+	if err != nil {
+		return nil, err
+	}
+
+	return &actor, nil
 }

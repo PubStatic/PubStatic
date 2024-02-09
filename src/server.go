@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-
 	"github.com/PubStatic/PubStatic/activityPub"
 	"github.com/PubStatic/PubStatic/wellknown"
+	"io"
+	"net/http"
 )
 
 var fileserver = http.FileServer(http.Dir("./static"))
@@ -69,6 +69,28 @@ func configureServer() {
 			w.Write(jsonData)
 		} else {
 			fileserver.ServeHTTP(w, r)
+		}
+	})
+
+	http.HandleFunc("/inbox", func(w http.ResponseWriter, r *http.Request) {
+
+		body, err := io.ReadAll(io.Reader(r.Body))
+		if err != nil {
+			http.Error(w, "Error reading request body", http.StatusBadRequest)
+			return
+		}
+
+		var activity activityPub.Activity
+
+		err = json.Unmarshal(body, &activity)
+		if err != nil {
+			http.Error(w, "Error parsing JSON", http.StatusBadRequest)
+			return
+		}
+
+		if activityPub.ReceiveActivity(activity, r.Header) != nil{
+			http.Error(w, "Invalid signature", http.StatusForbidden)
+			return
 		}
 	})
 }
