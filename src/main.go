@@ -5,6 +5,8 @@ import (
 )
 
 var logger = logrus.New()
+var port = 80
+var version = "0.0.1"
 
 func main() {
 	port = 8080 // Override of default port 80
