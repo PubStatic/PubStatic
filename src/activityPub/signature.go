@@ -27,7 +27,7 @@ func validateSignature(header map[string][]string, publicKey PublicKey) (bool, e
 			keyIDString = strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(part, "keyId=", ""), "\"", ""), "#main-key", "")
 		}
 	}
-	
+
 	if keyIDString == "" {
 		fmt.Println("keyIdString is NullOrEmpty")
 		return false, nil
@@ -59,7 +59,7 @@ func validateSignature(header map[string][]string, publicKey PublicKey) (bool, e
 	case "(request-target) host date digest":
 		comparisionString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s", currentPath, header["Host"][0], header["Date"][0], header["Digest"][0])
 	case "(request-target) host date digest content-type":
-		comparisionString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s\ncontent-type: %s", currentPath, header["Host"][0], header["Date"][0], header["Digest"][0], header["Content-Type"][0],)
+		comparisionString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s\ncontent-type: %s", currentPath, header["Host"][0], header["Date"][0], header["Digest"][0], header["Content-Type"][0])
 	default:
 		fmt.Println("No header configuration found for", headers)
 		return false, nil
@@ -76,7 +76,7 @@ func validateSignature(header map[string][]string, publicKey PublicKey) (bool, e
 	return true, nil
 }
 
-func importPem(pemPublicKey string) rsa.PublicKey{
+func importPem(pemPublicKey string) rsa.PublicKey {
 	// Decode the PEM data
 	block, _ := pem.Decode([]byte(pemPublicKey))
 	if block == nil {
