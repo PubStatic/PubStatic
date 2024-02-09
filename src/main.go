@@ -1,27 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
 	"github.com/sirupsen/logrus"
 )
 
+var logger = logrus.New()
+
 func main() {
-    logger := logrus.New()
+	port = 8080 // Override of default port 80
 
-	port := 8080
+	configureFileServer()
+	configureActivityPubServer()
 
-	fileserver := http.FileServer(http.Dir("./static"))
+	startServer()
+}
 
-	http.Handle("/", fileserver)
-
-	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello!")
-	})
-
-	logger.Infof("Starting server at port %d", port)
-
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
-		logger.Fatal(err)
-	}
+func init() {
+	logger.Level = logrus.TraceLevel
 }
