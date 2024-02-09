@@ -1,9 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"github.com/PubStatic/PubStatic/activityPub"
+	"github.com/PubStatic/PubStatic/wellknown"
 )
 
 var port = 80
@@ -16,7 +17,21 @@ func configureFileServer() {
 
 func configureActivityPubServer() {
 	http.HandleFunc("/.well-known/webfinger", func(w http.ResponseWriter, r *http.Request) {
-		activityPub.GetWebfinger()
+		wellknown.GetWebfinger()
+	})
+
+	http.HandleFunc("/.well-known/nodeinfo", func(w http.ResponseWriter, r *http.Request) {
+		nodeInfoLink := wellknown.GetLinkToNodeInfo(r.Host)
+
+		jsonData, err := json.Marshal(nodeInfoLink)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+
+		w.Write(jsonData)
 	})
 }
 
