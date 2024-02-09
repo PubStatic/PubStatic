@@ -15,7 +15,17 @@ func configureFileServer() {
 
 func configureActivityPubServer() {
 	http.HandleFunc("/.well-known/webfinger", func(w http.ResponseWriter, r *http.Request) {
-		wellknown.GetWebfinger()
+		webfinger := wellknown.GetWebfinger(r.Host, userName)
+
+		jsonData, err := json.Marshal(webfinger)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+
+		w.Write(jsonData)
 	})
 
 	http.HandleFunc("/.well-known/nodeinfo", func(w http.ResponseWriter, r *http.Request) {

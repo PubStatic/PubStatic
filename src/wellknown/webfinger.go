@@ -1,24 +1,31 @@
 package wellknown
 
 import (
-	"net/url"
+	"fmt"
 )
 
-func GetWebfinger() Webfinger {
+func GetWebfinger(host string, userName string) Webfinger {
 	logger.Trace("Getting webfinger")
 
 	return Webfinger{
-		
+		Subject: fmt.Sprintf("acct:%s@%s", userName, host),
+		Links: []Link{
+			{
+				Rel:  "self",
+				Type: "application/activity+json",
+				Href: fmt.Sprintf("https://%s", host),
+			},
+		},
 	}
 }
 
-type Webfinger struct{
+type Webfinger struct {
 	Subject string
-	Links []Link
+	Links   []Link
 }
 
 type Link struct {
-	Rel string
+	Rel  string
 	Type string
-	Href url.URL
+	Href string
 }
