@@ -3,17 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/PubStatic/PubStatic/wellknown"
 	"net/http"
+
+	"github.com/PubStatic/PubStatic/activityPub"
+	"github.com/PubStatic/PubStatic/wellknown"
 )
 
-func configureFileServer() {
-	fileserver := http.FileServer(http.Dir("./static"))
+var fileserver = http.FileServer(http.Dir("./static"))
 
-	http.Handle("/", fileserver)
-}
-
-func configureActivityPubServer() {
+func configureServer() {
 	http.HandleFunc("/.well-known/webfinger", func(w http.ResponseWriter, r *http.Request) {
 		webfinger := wellknown.GetWebfinger(r.Host, userName)
 
@@ -54,6 +52,24 @@ func configureActivityPubServer() {
 		w.Header().Set("Content-Type", "application/json")
 
 		w.Write(jsonData)
+	})
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Header["Accept"][0] == "application/json" {
+			actor := activityPub.GetActor(r.Host, userName, userName, summary, publicKeyPem)
+
+			jsonData, err := json.Marshal(actor)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+
+			w.Write(jsonData)
+		} else {
+			fileserver.ServeHTTP(w, r)
+		}
 	})
 }
 

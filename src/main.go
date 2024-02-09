@@ -5,16 +5,14 @@ import (
 )
 
 var logger = logrus.New()
-var port = 80
+var port = 8080
 var version = "0.0.1"
 var userName = "blog"
+var summary = "Hello World!"
+var publicKeyPem = ""
 
 func main() {
-	port = 8080 // Override of default port 80
-
-	configureFileServer()
-	configureActivityPubServer()
-
+	configureServer()
 	startServer()
 }
 
