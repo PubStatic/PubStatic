@@ -71,9 +71,13 @@ func validateSignature(header map[string][]string, publicKey PublicKey) (bool, e
 
 	rsaKey := importPem(publicKey.PublicKeyPem)
 
-	rsa.VerifyPKCS1v15(&rsaKey, crypto.SHA256, hashed[:], []byte(signatureHash))
+	rsaError := rsa.VerifyPKCS1v15(&rsaKey, crypto.SHA256, hashed[:], []byte(signatureHash))
 
-	return true, nil
+	if rsaError != nil {
+		return false, rsaError
+	} else {
+		return true, nil
+	}
 }
 
 func importPem(pemPublicKey string) rsa.PublicKey {
