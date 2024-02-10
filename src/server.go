@@ -7,12 +7,23 @@ import (
 	"github.com/PubStatic/PubStatic/wellknown"
 	"io"
 	"net/http"
+	"time"
 )
 
 var fileserver = http.FileServer(http.Dir("./static"))
+var server = http.Server{}
 
 func configureServer() {
-	http.HandleFunc("/.well-known/webfinger", func(w http.ResponseWriter, r *http.Request) {
+	mux := http.NewServeMux()
+
+	loggedHandler := loggingMiddleware(mux)
+
+	server = http.Server{
+		Addr:    fmt.Sprintf(":%d", port),
+		Handler: loggedHandler,
+	}
+
+	mux.HandleFunc("/.well-known/webfinger", func(w http.ResponseWriter, r *http.Request) {
 		webfinger := wellknown.GetWebfinger(r.Host, userName)
 
 		jsonData, err := json.Marshal(webfinger)
@@ -26,7 +37,7 @@ func configureServer() {
 		w.Write(jsonData)
 	})
 
-	http.HandleFunc("/.well-known/nodeinfo", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/.well-known/nodeinfo", func(w http.ResponseWriter, r *http.Request) {
 		nodeInfoLink := wellknown.GetLinkToNodeInfo(r.Host)
 
 		jsonData, err := json.Marshal(nodeInfoLink)
@@ -40,7 +51,7 @@ func configureServer() {
 		w.Write(jsonData)
 	})
 
-	http.HandleFunc("/nodeinfo/2.1", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/nodeinfo/2.1", func(w http.ResponseWriter, r *http.Request) {
 		nodeInfo := wellknown.GetNodeInfo2_1(version)
 
 		jsonData, err := json.Marshal(nodeInfo)
@@ -54,7 +65,7 @@ func configureServer() {
 		w.Write(jsonData)
 	})
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
 		acceptHeader := r.Header["Accept"]
 
@@ -75,7 +86,7 @@ func configureServer() {
 		}
 	})
 
-	http.HandleFunc("/inbox", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/inbox", func(w http.ResponseWriter, r *http.Request) {
 
 		body, err := io.ReadAll(io.Reader(r.Body))
 		if err != nil {
@@ -91,7 +102,7 @@ func configureServer() {
 			return
 		}
 
-		if activityPub.ReceiveActivity(activity, r.Header) != nil{
+		if activityPub.ReceiveActivity(activity, r.Header) != nil {
 			http.Error(w, "Invalid signature", http.StatusForbidden)
 			return
 		}
@@ -100,7 +111,22 @@ func configureServer() {
 
 func startServer() {
 	logger.Infof("Starting server at port %d", port)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
+	if err := server.ListenAndServe(); err != nil {
 		logger.Fatal(err)
 	}
+}
+
+// Logging middleware logs the incoming request method and URL
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		// Call the next handler in the chain
+		next.ServeHTTP(w, r)
+
+		logger.Debugf("%s %s %v",
+			r.Method,
+			r.URL.Path,
+			time.Since(start))
+	})
 }
