@@ -72,4 +72,4 @@ jobs:
           regex: false
 
       # Deploy Kubernetes YAML
-      - run: kubectl apply -f ./Kubernetes.yaml --kubeconfig ${{ steps.write_file.outputs.filePath }} -n pubstatic
+      - run: kubectl apply -f ./kubernetes.yaml --kubeconfig ${{ steps.write_file.outputs.filePath }} -n pubstatic
