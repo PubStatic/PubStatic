@@ -69,7 +69,7 @@ func configureServer() {
 
 		acceptHeader := r.Header["Accept"]
 
-		if len(acceptHeader) > 0 && r.Header["Accept"][0] == "application/json" {
+		if len(acceptHeader) > 0 && (acceptHeader[0] == "application/json" || acceptHeader[0] == "application/activity+json") {
 			actor := activityPub.GetActor(r.Host, userName, userName, summary, publicKeyPem)
 
 			jsonData, err := json.Marshal(actor)
@@ -124,7 +124,9 @@ func loggingMiddleware(next http.Handler) http.Handler {
 		// Call the next handler in the chain
 		next.ServeHTTP(w, r)
 
-		logger.Debugf("%s %s %v",
+		logger.Debugf("Headers: %s", r.Header)
+
+		logger.Infof("%s %s %v",
 			r.Method,
 			r.URL,
 			time.Since(start))
