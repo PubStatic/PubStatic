@@ -2,9 +2,12 @@
     "cSpell.words": [
         "activitypub",
         "Debugf",
+        "gzhttp",
+        "gziphandler",
         "Halfyear",
         "Infof",
         "jacobtomlinson",
+        "klauspost",
         "logrus",
         "nodeinfo",
         "pubstatic",

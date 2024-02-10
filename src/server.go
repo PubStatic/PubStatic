@@ -3,11 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/PubStatic/PubStatic/activityPub"
-	"github.com/PubStatic/PubStatic/wellknown"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/PubStatic/PubStatic/activityPub"
+	"github.com/PubStatic/PubStatic/wellknown"
+	"github.com/klauspost/compress/gzhttp"
 )
 
 var server = http.Server{}
@@ -17,10 +19,11 @@ func configureServer() {
 	fileserver := http.FileServer(http.Dir("./static"))
 
 	loggedHandler := loggingMiddleware(mux)
+	gzipHandler := gzhttp.GzipHandler(loggedHandler)
 
 	server = http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
-		Handler: loggedHandler,
+		Handler: gzipHandler,
 	}
 
 	mux.HandleFunc("/.well-known/webfinger", func(w http.ResponseWriter, r *http.Request) {
