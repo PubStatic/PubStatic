@@ -5,6 +5,7 @@
         "Infof",
         "logrus",
         "nodeinfo",
+        "pubstatic",
         "sirupsen"
     ]
 }
