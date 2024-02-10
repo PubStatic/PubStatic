@@ -24,3 +24,4 @@ __debug*
 
 src/config/publicKey.pem
 src/config/privateKey.pem
+src/config/settings.dev.yaml
