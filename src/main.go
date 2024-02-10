@@ -19,6 +19,7 @@ var publicKeyPem = ""
 var mongoConnectionString = ""
 
 func main() {
+	loadConfig()
 	generateKeys()
 
 	configureServer()
@@ -27,6 +28,16 @@ func main() {
 
 func init() {
 	logger.Level = logrus.TraceLevel
+}
+
+func loadConfig(){
+	settingsString, _ := repository.ReadFile("settings.dev.yaml")
+
+	if settingsString == "" {
+		settingsString, _ = repository.ReadFile("settings.yaml")
+	}
+
+	mongoConnectionString = os.Getenv("MONGODB")
 }
 
 func generateKeys() {
