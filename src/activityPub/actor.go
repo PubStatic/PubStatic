@@ -10,7 +10,7 @@ import (
 func GetActor(host string, preferredUsername string, name string, summary string, publicKeyPem string) Actor {
 	logger.Trace("Getting Actor")
 
-	id := fmt.Sprintf("https://%s/%s", host, preferredUsername)
+	id := fmt.Sprintf("https://%s", host)
 
 	return Actor{
 		Context: []string{
