@@ -6,10 +6,8 @@ import (
 	"io"
 	"net/http"
 	"time"
-
 	"github.com/PubStatic/PubStatic/activityPub"
 	"github.com/PubStatic/PubStatic/wellknown"
-	"github.com/klauspost/compress/gzhttp"
 )
 
 var server = http.Server{}
@@ -17,14 +15,6 @@ var server = http.Server{}
 func configureServer() {
 	mux := http.NewServeMux()
 	fileserver := http.FileServer(http.Dir("./static"))
-
-	loggedHandler := loggingMiddleware(mux)
-	gzipHandler := gzhttp.GzipHandler(loggedHandler)
-
-	server = http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
-		Handler: gzipHandler,
-	}
 
 	mux.HandleFunc("/.well-known/webfinger", func(w http.ResponseWriter, r *http.Request) {
 		webfinger := wellknown.GetWebfinger(r.Host, userName)
@@ -69,7 +59,6 @@ func configureServer() {
 	})
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-
 		acceptHeader := r.Header["Accept"]
 
 		if len(acceptHeader) > 0 && (acceptHeader[0] == "application/json" || acceptHeader[0] == "application/activity+json") {
@@ -110,6 +99,11 @@ func configureServer() {
 			return
 		}
 	})
+
+	server = http.Server{
+		Addr:    fmt.Sprintf(":%d", port),
+		Handler: gzipHandler(loggingMiddleware(mux)),
+	}
 }
 
 func startServer() {
