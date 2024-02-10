@@ -23,12 +23,12 @@ func GetWebfinger(host string, userName string) Webfinger {
 }
 
 type Webfinger struct {
-	Subject string
-	Links   []Link
+	Subject string `json:"subject"`
+	Links   []Link `json:"links"`
 }
 
 type Link struct {
-	Rel  string
-	Type string
-	Href string
+	Rel  string `json:"rel"`
+	Type string `json:"type"`
+	Href string `json:"href"`
 }
