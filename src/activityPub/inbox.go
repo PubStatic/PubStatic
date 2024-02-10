@@ -4,6 +4,8 @@ import "errors"
 
 func ReceiveActivity(activity Activity, header map[string][]string) error {
 
+	logger.Trace("Entered ReceiveActivity")
+
 	actor, err := GetForeignActor(activity.Actor)
 	if err != nil {
 		return err

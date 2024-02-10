@@ -8,6 +8,7 @@ import (
 )
 
 func GetActor(host string, preferredUsername string, name string, summary string, publicKeyPem string) Actor {
+	logger.Trace("Getting Actor")
 
 	id := fmt.Sprintf("https://%s", host)
 
@@ -61,6 +62,8 @@ type PublicKey struct {
 }
 
 func GetForeignActor(actorId string) (*Actor, error) {
+	logger.Tracef("Getting foreign actor with id: %s", actorId)
+
 	// Send an HTTP GET request
 	response, err := http.Get(actorId)
 	if err != nil {

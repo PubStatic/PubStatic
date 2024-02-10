@@ -1,7 +1,6 @@
 package wellknown
 
 func GetNodeInfo2_1(version string) NodeInfo {
-
 	logger.Trace("Getting NodeInfo")
 
 	return NodeInfo{

@@ -13,6 +13,7 @@ import (
 )
 
 func validateSignature(header map[string][]string, publicKey PublicKey) (bool, error) {
+	logger.Trace("Validating signature")
 
 	signature := header["Signature"][0]
 

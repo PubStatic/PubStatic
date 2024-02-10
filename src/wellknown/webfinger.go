@@ -7,7 +7,8 @@ import (
 func GetWebfinger(host string, userName string) Webfinger {
 	logger.Trace("Getting webfinger")
 
-	logger.Debug(fmt.Sprintf("Host: %s\nUserName: %s", host, userName))
+	logger.Debugf("Host: %s", host)
+	logger.Debugf("UserName: %s", userName)
 
 	return Webfinger{
 		Subject: fmt.Sprintf("acct:%s@%s", userName, host),
