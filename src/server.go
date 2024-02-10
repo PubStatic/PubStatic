@@ -10,11 +10,11 @@ import (
 	"time"
 )
 
-var fileserver = http.FileServer(http.Dir("./static"))
 var server = http.Server{}
 
 func configureServer() {
 	mux := http.NewServeMux()
+	fileserver := http.FileServer(http.Dir("./static"))
 
 	loggedHandler := loggingMiddleware(mux)
 
@@ -126,7 +126,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
 		logger.Debugf("%s %s %v",
 			r.Method,
-			r.URL.Path,
+			r.URL,
 			time.Since(start))
 	})
 }
