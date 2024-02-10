@@ -36,23 +36,23 @@ func validateSignature(header map[string][]string, publicKey PublicKey) (bool, e
 		return false, err
 	}
 
-	var comparisionString string
+	var comparisonString string
 
 	currentPath := "/inbox"
 
 	switch headers {
 	case "(request-target) host date digest":
-		comparisionString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s", currentPath, header["Host"][0], header["Date"][0], header["Digest"][0])
+		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s", currentPath, header["Host"][0], header["Date"][0], header["Digest"][0])
 	case "(request-target) host date digest content-type":
-		comparisionString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s\ncontent-type: %s", currentPath, header["Host"][0], header["Date"][0], header["Digest"][0], header["Content-Type"][0])
+		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s\ncontent-type: %s", currentPath, header["Host"][0], header["Date"][0], header["Digest"][0], header["Content-Type"][0])
 	default:
 		fmt.Println("No header configuration found for", headers)
 		return false, nil
 	}
 
-	fmt.Println("ComparisonString=", comparisionString)
+	fmt.Println("ComparisonString=", comparisonString)
 
-	hashed := sha256.Sum256([]byte(comparisionString))
+	hashed := sha256.Sum256([]byte(comparisonString))
 
 	rsaKey := importPem(publicKey.PublicKeyPem)
 
