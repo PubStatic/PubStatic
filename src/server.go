@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
+
 	"github.com/PubStatic/PubStatic/activityPub"
 	"github.com/PubStatic/PubStatic/wellknown"
 )
@@ -59,9 +61,9 @@ func configureServer() {
 	})
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		acceptHeader := r.Header["Accept"]
+		acceptHeader := r.Header.Get("Accept")
 
-		if len(acceptHeader) > 0 && (acceptHeader[0] == "application/json" || acceptHeader[0] == "application/activity+json") {
+		if len(acceptHeader) > 0 && (strings.Contains(acceptHeader, "application/json") || strings.Contains(acceptHeader, "application/activity+json")) {
 			actor := activityPub.GetActor(r.Host, userName, userName, summary, publicKeyPem)
 
 			jsonData, err := json.Marshal(actor)
