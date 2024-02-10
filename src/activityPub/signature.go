@@ -81,3 +81,34 @@ func importPem(pemPublicKey string) rsa.PublicKey {
 
 	return *pubKey
 }
+
+func GetPublicKeyPem(privateKey rsa.PrivateKey) (*string, error) {
+	// Extract public key from private key
+	publicKey := &privateKey.PublicKey
+
+	// Marshal the public key to DER format
+	pubDER := x509.MarshalPKCS1PublicKey(publicKey)
+
+	// Create PEM block for the public key
+	pubBlock := &pem.Block{
+		Type:  "RSA PUBLIC KEY",
+		Bytes: pubDER,
+	}
+
+	// Encode the PEM block to string
+	pubPEM := string(pem.EncodeToMemory(pubBlock))
+
+	return &pubPEM, nil
+}
+
+func GetPrivateKeyPem(privateKey rsa.PrivateKey) (string, error) {
+	// Convert RSA private key to PEM format
+	privateKeyPEM := &pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: x509.MarshalPKCS1PrivateKey(&privateKey),
+	}
+
+	privateKeyPEMString := string(pem.EncodeToMemory(privateKeyPEM))
+
+	return privateKeyPEMString, nil
+}

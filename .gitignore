@@ -21,3 +21,6 @@
 go.work
 
 __debug*
+
+src/config/publicKey.pem
+src/config/privateKey.pem

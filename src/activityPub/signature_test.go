@@ -5,9 +5,7 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
-	"crypto/x509"
 	"encoding/base64"
-	"encoding/pem"
 	"fmt"
 	"testing"
 )
@@ -22,15 +20,15 @@ func TestValidateSignature(t *testing.T) {
 
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 
-	pem, err := getPem(*key)
+	pem, err := GetPublicKeyPem(*key)
 
 	if err != nil {
 		t.Fail()
 	}
 
 	publicKey := PublicKey{
-		Id: "https://example.com/id",
-		Owner: "https://example.com/key",
+		Id:           "https://example.com/id",
+		Owner:        "https://example.com/key",
 		PublicKeyPem: *pem,
 	}
 
@@ -43,8 +41,8 @@ func TestValidateSignature(t *testing.T) {
 	signatureBase64 := base64.StdEncoding.EncodeToString(signature)
 
 	signatureHeader := "keyId=\"https://example.com/key\",headers=\"(request-target) host date digest content-type\"," +
-	fmt.Sprintf("signature=\"%s\"", signatureBase64)
-	
+		fmt.Sprintf("signature=\"%s\"", signatureBase64)
+
 	header := map[string][]string{
 		"Signature":    {signatureHeader},
 		"Host":         {host},
@@ -65,23 +63,4 @@ func TestValidateSignature(t *testing.T) {
 	if !result {
 		t.Errorf("Expected true, got false")
 	}
-}
-
-func getPem(privateKey rsa.PrivateKey) (*string, error) {
-	// Extract public key from private key
-	publicKey := &privateKey.PublicKey
-
-	// Marshal the public key to DER format
-	pubDER := x509.MarshalPKCS1PublicKey(publicKey)
-
-	// Create PEM block for the public key
-	pubBlock := &pem.Block{
-		Type:  "RSA PUBLIC KEY",
-		Bytes: pubDER,
-	}
-
-	// Encode the PEM block to string
-	pubPEM := string(pem.EncodeToMemory(pubBlock))
-
-	return &pubPEM, nil
 }

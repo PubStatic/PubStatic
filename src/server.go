@@ -3,13 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/PubStatic/PubStatic/activityPub"
+	"github.com/PubStatic/PubStatic/wellknown"
 	"io"
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/PubStatic/PubStatic/activityPub"
-	"github.com/PubStatic/PubStatic/wellknown"
 )
 
 var server = http.Server{}
