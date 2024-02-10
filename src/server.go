@@ -55,7 +55,10 @@ func configureServer() {
 	})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Header["Accept"][0] == "application/json" {
+
+		acceptHeader := r.Header["Accept"]
+
+		if len(acceptHeader) > 0 && r.Header["Accept"][0] == "application/json" {
 			actor := activityPub.GetActor(r.Host, userName, userName, summary, publicKeyPem)
 
 			jsonData, err := json.Marshal(actor)
