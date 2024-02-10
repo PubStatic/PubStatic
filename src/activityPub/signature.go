@@ -5,10 +5,10 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/pem"
 	"fmt"
 	"log"
-	"net/url"
 	"strings"
 )
 
@@ -21,35 +21,20 @@ func validateSignature(header map[string][]string, publicKey PublicKey) (bool, e
 		fmt.Println("Signature Header Part=", part)
 	}
 
-	var keyIDString string
-	for _, part := range parts {
-		if strings.HasPrefix(part, "keyId") {
-			keyIDString = strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(part, "keyId=", ""), "\"", ""), "#main-key", "")
-		}
-	}
-
-	if keyIDString == "" {
-		fmt.Println("keyIdString is NullOrEmpty")
-		return false, nil
-	}
-
-	keyID, err := url.Parse(keyIDString)
-	if err != nil {
-		fmt.Println("Error parsing keyId:", err)
-		return false, err
-	}
-
 	signatureHash := ""
 	headers := ""
 	for _, part := range parts {
 		if strings.HasPrefix(part, "signature") {
-			signatureHash = strings.ReplaceAll(strings.ReplaceAll(part, "signature=", ""), "\"", "")
+			signatureHash = strings.ReplaceAll(strings.ReplaceAll(string(part), "signature=", ""), "\"", "")
 		} else if strings.HasPrefix(part, "headers") {
 			headers = strings.ReplaceAll(strings.ReplaceAll(part, "headers=", ""), "\"", "")
 		}
 	}
 
-	fmt.Println("KeyId=", keyID)
+	decoded, err := base64.StdEncoding.DecodeString(signatureHash)
+	if err != nil {
+		return false, err
+	}
 
 	var comparisionString string
 
@@ -71,7 +56,7 @@ func validateSignature(header map[string][]string, publicKey PublicKey) (bool, e
 
 	rsaKey := importPem(publicKey.PublicKeyPem)
 
-	rsaError := rsa.VerifyPKCS1v15(&rsaKey, crypto.SHA256, hashed[:], []byte(signatureHash))
+	rsaError := rsa.VerifyPKCS1v15(&rsaKey, crypto.SHA256, hashed[:], decoded)
 
 	if rsaError != nil {
 		return false, rsaError
