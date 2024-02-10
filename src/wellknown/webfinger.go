@@ -16,7 +16,7 @@ func GetWebfinger(host string, userName string) Webfinger {
 			{
 				Rel:  "self",
 				Type: "application/activity+json",
-				Href: fmt.Sprintf("https://%s", host),
+				Href: fmt.Sprintf("https://%s/%s", host, userName),
 			},
 		},
 	}
