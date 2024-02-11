@@ -33,35 +33,35 @@ func GetNodeInfo2_1(version string) NodeInfo {
 }
 
 type NodeInfo struct {
-	Version          string
-	Software         Software
-	Protocols        []string
-	Services         Service
-	Usage            Usage
-	OpenRegistration bool
-	Metadata         map[string]string
+	Version          string            `json:"version"`
+	Software         Software          `json:"software"`
+	Protocols        []string          `json:"protocols"`
+	Services         Service           `json:"services"`
+	Usage            Usage             `json:"usage"`
+	OpenRegistration bool              `json:"openRegistration"`
+	Metadata         map[string]string `json:"metadata"`
 }
 
 type Software struct {
-	Name       string
-	Version    string
-	Repository string
-	Homepage   string
+	Name       string `json:"name"`
+	Version    string `json:"version"`
+	Repository string `json:"repository"`
+	Homepage   string `json:"homepage"`
 }
 
 type Service struct {
-	Outbound []Service // Empty array
-	Inbound  []Service // Empty array
+	Outbound []Service `json:"outbound"` // Empty array
+	Inbound  []Service `json:"inbound"` // Empty array
 }
 
 type Usage struct {
-	LocalPosts    int
-	LocalComments int
-	Users         Users
+	LocalPosts    int `json:"localPosts"`
+	LocalComments int `json:"localComments"`
+	Users         Users `json:"users"`
 }
 
 type Users struct {
-	ActiveHalfyear int
-	ActiveMonth    int
-	Total          int
+	ActiveHalfyear int `json:"activeHalfyear"`
+	ActiveMonth    int `json:"activeMonth"`
+	Total          int `json:"total"`
 }

@@ -16,7 +16,7 @@ func GetLinkToNodeInfo(host string) NodeInfoLink{
 }
 
 type NodeInfoLink struct{
-	Links []NodeInfoSubLink `json:"name"`
+	Links []NodeInfoSubLink `json:"links"`
 }
 
 type NodeInfoSubLink struct{

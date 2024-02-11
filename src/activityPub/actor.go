@@ -39,26 +39,26 @@ func GetActor(host string, preferredUsername string, name string, summary string
 }
 
 type Actor struct {
-	Context           []string `json:"@context"`
-	Type              string
-	Id                string
-	Outbox            string
-	Following         string
-	Followers         string
-	Inbox             string
-	PreferredUsername string
-	Name              string
-	Summary           string
-	Icon              []string
-	PublicKey         PublicKey
+	Context           []string  `json:"@context"`
+	Type              string    `json:"type"`
+	Id                string    `json:"id"`
+	Outbox            string    `json:"outbox"`
+	Following         string    `json:"following"`
+	Followers         string    `json:"followers"`
+	Inbox             string    `json:"inbox"`
+	PreferredUsername string    `json:"preferredUsername"`
+	Name              string    `json:"name"`
+	Summary           string    `json:"summary"`
+	Icon              []string  `json:"icon"`
+	PublicKey         PublicKey `json:"publicKey"`
 }
 
 type PublicKey struct {
 	Context      string `json:"@context"`
 	Type         string `json:"@type"`
-	Id           string
-	Owner        string
-	PublicKeyPem string
+	Id           string `json:"id"`
+	Owner        string `json:"owner"`
+	PublicKeyPem string `json:"publicKeyPem"`
 }
 
 func GetForeignActor(actorId string) (*Actor, error) {
