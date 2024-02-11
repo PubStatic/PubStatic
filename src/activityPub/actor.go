@@ -26,9 +26,7 @@ func GetActor(host string, preferredUsername string, name string, summary string
 		PreferredUsername: preferredUsername,
 		Name:              name,
 		Summary:           summary,
-		Icon: []string{
-			"", // TODO Add icon url here
-		},
+		Icon:              []string{}, // TODO Add icon url here
 		PublicKey: PublicKey{
 			Id:           id + "#main-key",
 			Owner:        id,
