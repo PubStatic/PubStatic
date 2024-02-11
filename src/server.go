@@ -67,6 +67,7 @@ func configureServer() {
 
 			jsonData, err := json.Marshal(actor)
 			if err != nil {
+				logger.Error("InternalServer Error. Could not retrieve Actor.", err)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
