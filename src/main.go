@@ -5,16 +5,17 @@ import (
 	"crypto/rsa"
 	"os"
 	"github.com/PubStatic/PubStatic/activityPub"
+	"github.com/PubStatic/PubStatic/models"
 	"github.com/PubStatic/PubStatic/repository"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
+	"gopkg.in/yaml.v2"
 )
 
 var logger = logrus.New()
-var port = 8080
+var settings = models.Settings{}
+
 var version = "0.0.1"
-var userName = "blog"
-var summary = "Hello World!"
 var publicKeyPem = ""
 var mongoConnectionString = ""
 
@@ -37,12 +38,17 @@ func loadConfig(){
 		settingsString, _ = repository.ReadFile("settings.yaml")
 	}
 
+	err := yaml.Unmarshal([]byte(settingsString), &settings)
+	if err != nil {
+		panic(err)
+	}
+
 	mongoConnectionString = os.Getenv("MONGODB")
 }
 
 func generateKeys() {
-	fileContentPrivateKey, privErr := repository.ReadMongo[KeyValue]("Actor", "Key", bson.D{{"key", "privateKey"}}, mongoConnectionString)
-	fileContentPublicKey, pubErr := repository.ReadMongo[KeyValue]("Actor", "Key", bson.D{{"key", "publicKey"}}, mongoConnectionString)
+	fileContentPrivateKey, privErr := repository.ReadMongo[models.KeyValue]("Actor", "Key", bson.D{{"key", "privateKey"}}, mongoConnectionString)
+	fileContentPublicKey, pubErr := repository.ReadMongo[models.KeyValue]("Actor", "Key", bson.D{{"key", "publicKey"}}, mongoConnectionString)
 
 	if privErr != nil || pubErr != nil {
 		logger.Error("Mongo error")
@@ -67,7 +73,7 @@ func generateKeys() {
 
 		publicKeyPem = *publicKeyPemString
 
-		repository.WriteMongo("Actor", "Key", KeyValue{Key: "publicKey", Value: publicKeyPem}, mongoConnectionString)
-		repository.WriteMongo("Actor", "Key", KeyValue{Key: "privateKey", Value: privateKeyPemString}, mongoConnectionString)
+		repository.WriteMongo("Actor", "Key", models.KeyValue{Key: "publicKey", Value: publicKeyPem}, mongoConnectionString)
+		repository.WriteMongo("Actor", "Key", models.KeyValue{Key: "privateKey", Value: privateKeyPemString}, mongoConnectionString)
 	}
 }

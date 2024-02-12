@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"github.com/PubStatic/PubStatic/models"
 )
 
-func GetActor(host string, preferredUsername string, name string, summary string, publicKeyPem string) Actor {
+func GetActor(host string, settings models.Settings, publicKeyPem string) Actor {
 	logger.Trace("Getting Actor")
 
 	id := fmt.Sprintf("https://%s", host)
@@ -23,9 +24,9 @@ func GetActor(host string, preferredUsername string, name string, summary string
 		Inbox:             id + "/inbox",
 		Following:         id + "/following",
 		Followers:         id + "/followers",
-		PreferredUsername: preferredUsername,
-		Name:              name,
-		Summary:           summary,
+		PreferredUsername: settings.ActivityPubSettings.UserName,
+		Name:              settings.ActivityPubSettings.UserName,
+		Summary:           settings.ActivityPubSettings.UserDescription,
 		Icon:              []string{}, // TODO Add icon url here
 		PublicKey: PublicKey{
 			Id:           id + "#main-key",

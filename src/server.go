@@ -18,7 +18,7 @@ func configureServer() {
 	fileserver := http.FileServer(http.Dir("./static"))
 
 	mux.HandleFunc("/.well-known/webfinger", func(w http.ResponseWriter, r *http.Request) {
-		webfinger := wellknown.GetWebfinger(r.Host, userName)
+		webfinger := wellknown.GetWebfinger(r.Host, settings.ActivityPubSettings.UserName)
 
 		jsonData, err := json.Marshal(webfinger)
 		if err != nil {
@@ -63,7 +63,7 @@ func configureServer() {
 		acceptHeader := r.Header.Get("Accept")
 
 		if len(acceptHeader) > 0 && (strings.Contains(acceptHeader, "application/json") || strings.Contains(acceptHeader, "application/activity+json")) {
-			actor := activityPub.GetActor(r.Host, userName, userName, summary, publicKeyPem)
+			actor := activityPub.GetActor(r.Host, settings, publicKeyPem)
 
 			jsonData, err := json.Marshal(actor)
 			if err != nil {
@@ -103,13 +103,13 @@ func configureServer() {
 	})
 
 	server = http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
+		Addr:    fmt.Sprintf(":%d", settings.ServerSettings.Port),
 		Handler: gzipHandler(loggingMiddleware(mux)),
 	}
 }
 
 func startServer() {
-	logger.Infof("Starting server at port %d", port)
+	logger.Infof("Starting server at port %d", settings.ServerSettings.Port)
 	if err := server.ListenAndServe(); err != nil {
 		logger.Fatal(err)
 	}

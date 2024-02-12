@@ -1,0 +1,6 @@
+activityPub:
+  userName: blog
+  userDescription: "Hello Wold!"
+
+server:
+  port: 8080
