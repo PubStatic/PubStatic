@@ -3,9 +3,9 @@ package activityPub
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/PubStatic/PubStatic/models"
 	"io"
 	"net/http"
-	"github.com/PubStatic/PubStatic/models"
 )
 
 func GetActor(host string, settings models.Settings, publicKeyPem string) Actor {
@@ -37,18 +37,18 @@ func GetActor(host string, settings models.Settings, publicKeyPem string) Actor 
 }
 
 type Actor struct {
-	Context           []string  `json:"@context"`
-	Type              string    `json:"type"`
-	Id                string    `json:"id"`
-	Outbox            string    `json:"outbox"`
-	Following         string    `json:"following"`
-	Followers         string    `json:"followers"`
-	Inbox             string    `json:"inbox"`
-	PreferredUsername string    `json:"preferredUsername"`
-	Name              string    `json:"name"`
-	Summary           string    `json:"summary"`
-	Icon              []string  `json:"icon"`
-	PublicKey         PublicKey `json:"publicKey"`
+	Context           interface{} `json:"@context"`
+	Type              string      `json:"type"`
+	Id                string      `json:"id"`
+	Outbox            string      `json:"outbox"`
+	Following         string      `json:"following"`
+	Followers         string      `json:"followers"`
+	Inbox             string      `json:"inbox"`
+	PreferredUsername string      `json:"preferredUsername"`
+	Name              string      `json:"name"`
+	Summary           string      `json:"summary"`
+	Icon              []string    `json:"icon"`
+	PublicKey         PublicKey   `json:"publicKey"`
 }
 
 type PublicKey struct {
