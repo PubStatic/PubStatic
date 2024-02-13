@@ -69,6 +69,8 @@ func validateSignature(header http.Header, publicKey PublicKey, host string) (bo
 
 		return false, rsaError
 	} else {
+		logger.Debug("Signature valid")
+
 		return true, nil
 	}
 }

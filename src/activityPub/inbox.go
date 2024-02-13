@@ -1,8 +1,12 @@
 package activityPub
 
-import "errors"
+import (
+	"errors"
 
-func ReceiveActivity(activity Activity, header map[string][]string, host string) error {
+	"github.com/PubStatic/PubStatic/repository"
+)
+
+func ReceiveActivity(activity Activity, header map[string][]string, host string, connectionString string) error {
 
 	logger.Trace("Entered ReceiveActivity")
 
@@ -20,7 +24,7 @@ func ReceiveActivity(activity Activity, header map[string][]string, host string)
 
 	switch activity.Type {
 	case "Follow":
-		follow(activity)
+		follow(activity, connectionString)
 	case "Undo":
 		undo(activity)
 	}
@@ -28,8 +32,10 @@ func ReceiveActivity(activity Activity, header map[string][]string, host string)
 	return nil
 }
 
-func follow(activity Activity) {
+func follow(activity Activity, connectionString string) error {
 	logger.Debug(activity)
+
+	return repository.WriteMongo("Inbox", "Follow", activity, connectionString)
 }
 
 func undo(activity Activity) {

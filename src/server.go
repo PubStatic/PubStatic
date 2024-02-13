@@ -97,7 +97,7 @@ func configureServer() {
 			return
 		}
 
-		err = activityPub.ReceiveActivity(activity, r.Header, r.Host)
+		err = activityPub.ReceiveActivity(activity, r.Header, r.Host, mongoConnectionString)
 
 		if err != nil {
 			logger.Error(err)
