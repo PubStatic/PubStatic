@@ -1,5 +1,6 @@
 activityPub:
   userName: blog
+  cosmeticName: My awesome blog
   userDescription: "Hello Wold!"
 
 server:

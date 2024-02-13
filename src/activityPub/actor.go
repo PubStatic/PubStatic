@@ -25,7 +25,7 @@ func GetActor(host string, settings models.Settings, publicKeyPem string) Actor 
 		Following:         id + "/following",
 		Followers:         id + "/followers",
 		PreferredUsername: settings.ActivityPubSettings.UserName,
-		Name:              settings.ActivityPubSettings.UserName,
+		Name:              settings.ActivityPubSettings.CosmeticUserName,
 		Summary:           settings.ActivityPubSettings.UserDescription,
 		Icon:              []string{}, // TODO Add icon url here
 		PublicKey: PublicKey{

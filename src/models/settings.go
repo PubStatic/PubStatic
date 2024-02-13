@@ -10,6 +10,7 @@ type ServerSettings struct {
 }
 
 type ActivityPubSettings struct {
-	UserName        string `yaml:"userName"`
-	UserDescription string `yaml:"userDescription"`
+	UserName         string `yaml:"userName"`
+	CosmeticUserName string `yaml:"cosmeticName"`
+	UserDescription  string `yaml:"userDescription"`
 }
