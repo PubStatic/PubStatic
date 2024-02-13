@@ -34,14 +34,19 @@ func ReceiveActivity(activity Activity, header map[string][]string, host string,
 }
 
 func follow(activity Activity, connectionString string, actor Actor, host string) error {
-
-	sendActivity(Activity{
+	err := sendActivity(Activity{
 		Context: "https://www.w3.org/ns/activitystreams",
 		Id:      fmt.Sprintf("https://%s/accept/%s", host, uuid.New()),
 		Type:    "Accept",
 		Actor:   fmt.Sprintf("https://%s", host),
 		Object:  activity,
 	}, actor.Inbox)
+
+	if err != nil {
+		logger.Warn("Sending activity failed")
+
+		return err
+	}
 
 	return repository.WriteMongo("Inbox", "Follow", activity, connectionString)
 }
