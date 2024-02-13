@@ -1,7 +1,6 @@
 package activityPub
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 )
@@ -23,7 +22,7 @@ func sendActivity(activity Activity, inbox string) error {
 	}
 
 	if response.StatusCode != 200 {
-		return errors.New(fmt.Sprintf("sending activity failed with error code: %f", response.StatusCode))
+		return fmt.Errorf("sending activity failed with error code: %d", response.StatusCode)
 	}
 
 	logger.Trace("Successfully send activity")
