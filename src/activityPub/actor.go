@@ -47,7 +47,7 @@ type Actor struct {
 	PreferredUsername string      `json:"preferredUsername"`
 	Name              string      `json:"name"`
 	Summary           string      `json:"summary"`
-	Icon              []string    `json:"icon"`
+	Icon              interface{} `json:"icon"`
 	PublicKey         PublicKey   `json:"publicKey"`
 }
 
