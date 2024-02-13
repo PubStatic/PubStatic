@@ -81,9 +81,9 @@ func configureServer() {
 	})
 
 	mux.HandleFunc("/inbox", func(w http.ResponseWriter, r *http.Request) {
-
 		body, err := io.ReadAll(io.Reader(r.Body))
 		if err != nil {
+			logger.Error(err)
 			http.Error(w, "Error reading request body", http.StatusBadRequest)
 			return
 		}
@@ -92,11 +92,15 @@ func configureServer() {
 
 		err = json.Unmarshal(body, &activity)
 		if err != nil {
+			logger.Error(err)
 			http.Error(w, "Error parsing JSON", http.StatusBadRequest)
 			return
 		}
 
-		if activityPub.ReceiveActivity(activity, r.Header) != nil {
+		err = activityPub.ReceiveActivity(activity, r.Header)
+
+		if err != nil {
+			logger.Error(err)
 			http.Error(w, "Invalid signature", http.StatusForbidden)
 			return
 		}
