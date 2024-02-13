@@ -15,7 +15,7 @@ func ReceiveActivity(activity Activity, header map[string][]string) error {
 	isSignatureValid, err := validateSignature(header, actor.PublicKey)
 
 	if err != nil || !isSignatureValid {
-		return errors.New("invalid signature")
+		return errors.New("signature validation failed")
 	}
 
 	switch activity.Type {

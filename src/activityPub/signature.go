@@ -65,6 +65,8 @@ func validateSignature(header http.Header, publicKey PublicKey) (bool, error) {
 	rsaError := rsa.VerifyPKCS1v15(rsaKey, crypto.SHA256, hashed[:], decoded)
 
 	if rsaError != nil {
+		logger.Warn("Signature is not valid!")
+
 		return false, rsaError
 	} else {
 		return true, nil
@@ -72,45 +74,44 @@ func validateSignature(header http.Header, publicKey PublicKey) (bool, error) {
 }
 
 func importPem(pemPublicKey string) (*rsa.PublicKey, error) {
-    logger.Trace("Entered importPem")
+	logger.Trace("Entered importPem")
 
-    // Decode the PEM data
-    block, _ := pem.Decode([]byte(pemPublicKey))
-    if block == nil {
-        err := errors.New("could not decode byte array")
+	// Decode the PEM data
+	block, _ := pem.Decode([]byte(pemPublicKey))
+	if block == nil {
+		err := errors.New("could not decode byte array")
 
-        return nil, err
-    }
+		return nil, err
+	}
 
-    var pubKeyInterface interface{}
-    var err error
+	var pubKeyInterface interface{}
+	var err error
 
-    // Try to parse the key as PKIX
-    pubKeyInterface, err = x509.ParsePKIXPublicKey(block.Bytes)
-    if err != nil {
-        logger.Trace("Parsing as PKIX failed, trying PKCS1")
+	// Try to parse the key as PKIX
+	pubKeyInterface, err = x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		logger.Trace("Parsing as PKIX failed, trying PKCS1")
 
-        // If PKIX parsing fails, try PKCS1
-        parsedKey, err := x509.ParsePKCS1PublicKey(block.Bytes)
-        if err != nil {
-			
-            return nil, err
-        }
-        pubKeyInterface = parsedKey
-    }
+		// If PKIX parsing fails, try PKCS1
+		parsedKey, err := x509.ParsePKCS1PublicKey(block.Bytes)
+		if err != nil {
 
-    // Assert the parsed key is an RSA public key
-    pubKey, ok := pubKeyInterface.(*rsa.PublicKey)
-    if !ok {
-        err := errors.New("parsed key is not an RSA public key")
-        logger.Error(err)
-        return nil, err
-    }
+			return nil, err
+		}
+		pubKeyInterface = parsedKey
+	}
 
-    logger.Trace("Imported PEM")
-    return pubKey, nil
+	// Assert the parsed key is an RSA public key
+	pubKey, ok := pubKeyInterface.(*rsa.PublicKey)
+	if !ok {
+		err := errors.New("parsed key is not an RSA public key")
+		logger.Error(err)
+		return nil, err
+	}
+
+	logger.Trace("Imported PEM")
+	return pubKey, nil
 }
-
 
 func GetPublicKeyPem(privateKey rsa.PrivateKey) (*string, error) {
 	// Extract public key from private key
