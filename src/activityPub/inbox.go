@@ -8,6 +8,7 @@ func ReceiveActivity(activity Activity, header map[string][]string) error {
 
 	actor, err := GetForeignActor(activity.Actor)
 	if err != nil {
+		logger.Warn("Could not get foreign actor")
 		return err
 	}
 

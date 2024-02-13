@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -28,7 +27,7 @@ func setup(connectionString string) {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Connected to MongoDB!")
+	logger.Info("Connected to MongoDB!")
 }
 
 func WriteMongo(database string, collectionName string, document interface{}, connectionString string) error {

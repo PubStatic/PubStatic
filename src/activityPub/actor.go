@@ -60,8 +60,16 @@ type PublicKey struct {
 func GetForeignActor(actorId string) (*Actor, error) {
 	logger.Tracef("Getting foreign actor with id: %s", actorId)
 
+	// Create a new request with headers
+	req, err := http.NewRequest("GET", actorId, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Accept", "application/json")
+
 	// Send an HTTP GET request
-	response, err := http.Get(actorId)
+	response, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -79,6 +87,8 @@ func GetForeignActor(actorId string) (*Actor, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	logger.Trace("Successfully received actor")
 
 	return &actor, nil
 }

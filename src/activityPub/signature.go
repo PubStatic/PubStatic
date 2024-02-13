@@ -19,7 +19,7 @@ func validateSignature(header map[string][]string, publicKey PublicKey) (bool, e
 
 	parts := strings.Split(signature, ",")
 	for _, part := range parts {
-		fmt.Println("Signature Header Part=", part)
+		logger.Debug("Signature Header Part=", part)
 	}
 
 	signatureHash := ""
@@ -47,11 +47,11 @@ func validateSignature(header map[string][]string, publicKey PublicKey) (bool, e
 	case "(request-target) host date digest content-type":
 		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s\ncontent-type: %s", currentPath, header["Host"][0], header["Date"][0], header["Digest"][0], header["Content-Type"][0])
 	default:
-		fmt.Println("No header configuration found for", headers)
+		logger.Warn("No header configuration found for", headers)
 		return false, nil
 	}
 
-	fmt.Println("ComparisonString=", comparisonString)
+	logger.Debug("ComparisonString=", comparisonString)
 
 	hashed := sha256.Sum256([]byte(comparisonString))
 
