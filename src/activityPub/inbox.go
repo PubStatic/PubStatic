@@ -2,8 +2,9 @@ package activityPub
 
 import (
 	"errors"
-
+	"fmt"
 	"github.com/PubStatic/PubStatic/repository"
+	"github.com/google/uuid"
 )
 
 func ReceiveActivity(activity Activity, header map[string][]string, host string, connectionString string) error {
@@ -24,7 +25,7 @@ func ReceiveActivity(activity Activity, header map[string][]string, host string,
 
 	switch activity.Type {
 	case "Follow":
-		follow(activity, connectionString)
+		follow(activity, connectionString, *actor, host)
 	case "Undo":
 		undo(activity)
 	}
@@ -32,8 +33,15 @@ func ReceiveActivity(activity Activity, header map[string][]string, host string,
 	return nil
 }
 
-func follow(activity Activity, connectionString string) error {
-	logger.Debug(activity)
+func follow(activity Activity, connectionString string, actor Actor, host string) error {
+
+	sendActivity(Activity{
+		Context: "https://www.w3.org/ns/activitystreams",
+		Id:      fmt.Sprintf("https://%s/accept/%s", host, uuid.New()),
+		Type:    "Accept",
+		Actor:   fmt.Sprintf("https://%s", host),
+		Object:  activity,
+	}, actor.Inbox)
 
 	return repository.WriteMongo("Inbox", "Follow", activity, connectionString)
 }

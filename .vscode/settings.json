@@ -13,6 +13,7 @@
         "nodeinfo",
         "pubstatic",
         "sirupsen",
-        "Tracef"
+        "Tracef",
+        "uuid"
     ]
 }
