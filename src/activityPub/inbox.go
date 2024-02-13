@@ -28,7 +28,7 @@ func ReceiveActivity(activity Activity, header map[string][]string) error {
 }
 
 func follow(activity Activity) {
-
+	logger.Debug(activity)
 }
 
 func undo(activity Activity) {
