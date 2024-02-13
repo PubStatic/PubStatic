@@ -25,7 +25,7 @@ func ReceiveActivity(activity Activity, header map[string][]string, host string,
 
 	switch activity.Type {
 	case "Follow":
-		follow(activity, connectionString, *actor, host)
+		return follow(activity, connectionString, *actor, host)
 	case "Undo":
 		undo(activity)
 	}
