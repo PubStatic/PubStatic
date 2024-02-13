@@ -5,7 +5,7 @@ import "time"
 type Activity struct {
 	Id        string
 	Type      string
-	Context   string
+	Context   interface{}
 	To        []string
 	Bto       []string
 	Cc        []string
