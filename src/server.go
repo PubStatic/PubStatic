@@ -97,7 +97,7 @@ func configureServer() {
 			return
 		}
 
-		err = activityPub.ReceiveActivity(activity, r.Header)
+		err = activityPub.ReceiveActivity(activity, r.Header, r.Host)
 
 		if err != nil {
 			logger.Error(err)

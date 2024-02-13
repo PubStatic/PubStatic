@@ -52,7 +52,7 @@ func TestValidateSignature(t *testing.T) {
 	}
 
 	// Call the function being tested
-	result, err := validateSignature(header, publicKey)
+	result, err := validateSignature(header, publicKey, host)
 
 	// Check the result
 	if err != nil {

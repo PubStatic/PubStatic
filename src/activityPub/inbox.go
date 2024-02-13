@@ -2,7 +2,7 @@ package activityPub
 
 import "errors"
 
-func ReceiveActivity(activity Activity, header map[string][]string) error {
+func ReceiveActivity(activity Activity, header map[string][]string, host string) error {
 
 	logger.Trace("Entered ReceiveActivity")
 
@@ -12,7 +12,7 @@ func ReceiveActivity(activity Activity, header map[string][]string) error {
 		return err
 	}
 
-	isSignatureValid, err := validateSignature(header, actor.PublicKey)
+	isSignatureValid, err := validateSignature(header, actor.PublicKey, host)
 
 	if err != nil || !isSignatureValid {
 		return errors.New("signature validation failed")

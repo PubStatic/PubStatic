@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-func validateSignature(header http.Header, publicKey PublicKey) (bool, error) {
+func validateSignature(header http.Header, publicKey PublicKey, host string) (bool, error) {
 	logger.Trace("Validating signature")
 
 	signature := header.Get("Signature")
@@ -44,9 +44,9 @@ func validateSignature(header http.Header, publicKey PublicKey) (bool, error) {
 
 	switch headers {
 	case "(request-target) host date digest":
-		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s", currentPath, header.Get("Host"), header.Get("Date"), header.Get("Digest"))
+		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s", currentPath, host, header.Get("Date"), header.Get("Digest"))
 	case "(request-target) host date digest content-type":
-		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s\ncontent-type: %s", currentPath, header.Get("Host"), header.Get("Date"), header.Get("Digest"), header.Get("Content-Type"))
+		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s\ncontent-type: %s", currentPath, host, header.Get("Date"), header.Get("Digest"), header.Get("Content-Type"))
 	default:
 		logger.Warn("No header configuration found for", headers)
 		return false, nil
