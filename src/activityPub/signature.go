@@ -9,13 +9,14 @@ import (
 	"encoding/pem"
 	"fmt"
 	"log"
+	"net/http"
 	"strings"
 )
 
-func validateSignature(header map[string][]string, publicKey PublicKey) (bool, error) {
+func validateSignature(header http.Header, publicKey PublicKey) (bool, error) {
 	logger.Trace("Validating signature")
 
-	signature := header["Signature"][0]
+	signature := header.Get("Signature")
 
 	parts := strings.Split(signature, ",")
 	for _, part := range parts {
@@ -43,9 +44,9 @@ func validateSignature(header map[string][]string, publicKey PublicKey) (bool, e
 
 	switch headers {
 	case "(request-target) host date digest":
-		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s", currentPath, header["Host"][0], header["Date"][0], header["Digest"][0])
+		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s", currentPath, header.Get("Host"), header.Get("Date"), header.Get("Digest"))
 	case "(request-target) host date digest content-type":
-		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s\ncontent-type: %s", currentPath, header["Host"][0], header["Date"][0], header["Digest"][0], header["Content-Type"][0])
+		comparisonString = fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: %s\ncontent-type: %s", currentPath, header.Get("Host"), header.Get("Date"), header.Get("Digest"), header.Get("Content-Type"))
 	default:
 		logger.Warn("No header configuration found for", headers)
 		return false, nil

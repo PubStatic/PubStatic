@@ -4,6 +4,9 @@ WORKDIR /app
 
 COPY src .
 
+# Run tests
+RUN go test ./...
+
 RUN CGO_ENABLED=0 GOOS=linux go build -o pubstatic
 
 FROM alpine:latest as run
