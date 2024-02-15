@@ -3,6 +3,8 @@ package activityPub
 import (
 	"errors"
 	"fmt"
+	"net/url"
+
 	"github.com/PubStatic/PubStatic/repository"
 	"github.com/google/uuid"
 )
@@ -33,14 +35,20 @@ func ReceiveActivity(activity Activity, header map[string][]string, host string,
 	return nil
 }
 
-func follow(activity Activity, connectionString string, actor Actor, host string) error {
-	err := sendActivity(Activity{
+func follow(activity Activity, connectionString string, actor Actor, ownHost string) error {
+	url, err := url.Parse(actor.Inbox)
+
+	if err != nil {
+		return err
+	}
+
+	err = sendActivity(Activity{
 		Context: "https://www.w3.org/ns/activitystreams",
-		Id:      fmt.Sprintf("https://%s/accept/%s", host, uuid.New()),
+		Id:      fmt.Sprintf("https://%s/accept/%s", ownHost, uuid.New()),
 		Type:    "Accept",
-		Actor:   fmt.Sprintf("https://%s", host),
+		Actor:   fmt.Sprintf("https://%s", ownHost),
 		Object:  activity,
-	}, actor.Inbox)
+	}, *url, ownHost, connectionString)
 
 	if err != nil {
 		logger.Warn("Sending activity failed")

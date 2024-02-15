@@ -56,7 +56,7 @@ func validateSignature(header http.Header, publicKey PublicKey, host string) (bo
 
 	hashed := sha256.Sum256([]byte(comparisonString))
 
-	rsaKey, err := importPem(publicKey.PublicKeyPem)
+	rsaKey, err := ImportPublicKeyPem(publicKey.PublicKeyPem)
 
 	if err != nil {
 		return false, err
@@ -75,7 +75,7 @@ func validateSignature(header http.Header, publicKey PublicKey, host string) (bo
 	}
 }
 
-func importPem(pemPublicKey string) (*rsa.PublicKey, error) {
+func ImportPublicKeyPem(pemPublicKey string) (*rsa.PublicKey, error) {
 	logger.Trace("Entered importPem")
 
 	// Decode the PEM data
@@ -113,6 +113,28 @@ func importPem(pemPublicKey string) (*rsa.PublicKey, error) {
 
 	logger.Trace("Imported PEM")
 	return pubKey, nil
+}
+
+func ImportPrivateKeyPem(pemPublicKey string) (*rsa.PrivateKey, error) {
+	logger.Trace("Entered ImportPrivateKeyPem")
+
+	// Decode the PEM data
+	block, _ := pem.Decode([]byte(pemPublicKey))
+	if block == nil {
+		err := errors.New("could not decode byte array")
+
+		return nil, err
+	}
+
+	parsedKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+
+		return nil, err
+	}
+
+	logger.Trace("Finished ImportPrivateKeyPem")
+
+	return parsedKey, nil
 }
 
 func GetPublicKeyPem(privateKey rsa.PrivateKey) (*string, error) {
