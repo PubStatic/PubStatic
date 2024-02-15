@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"time"
 
 	"github.com/PubStatic/PubStatic/repository"
 	"github.com/google/uuid"
@@ -48,6 +49,7 @@ func follow(activity Activity, connectionString string, actor Actor, ownHost str
 		Type:    "Accept",
 		Actor:   fmt.Sprintf("https://%s", ownHost),
 		Object:  activity,
+		Published: time.Now(),
 	}, *url, ownHost, connectionString)
 
 	if err != nil {
