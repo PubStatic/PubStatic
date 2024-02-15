@@ -2,6 +2,7 @@ activityPub:
   userName: blog
   cosmeticName: My awesome blog
   userDescription: "Hello Wold!"
+  profilePictureUrl: icon.svg
 
 server:
   port: 8080

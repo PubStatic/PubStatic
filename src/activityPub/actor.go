@@ -27,7 +27,9 @@ func GetActor(host string, settings models.Settings, publicKeyPem string) Actor 
 		PreferredUsername: settings.ActivityPubSettings.UserName,
 		Name:              settings.ActivityPubSettings.CosmeticUserName,
 		Summary:           settings.ActivityPubSettings.UserDescription,
-		Icon:              []string{}, // TODO Add icon url here
+		Icon: []string{
+			fmt.Sprintf("https://%s/pubstatic/icon", host),
+		},
 		PublicKey: PublicKey{
 			Id:           id + "#main-key",
 			Owner:        id,

@@ -3,12 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/PubStatic/PubStatic/activityPub"
-	"github.com/PubStatic/PubStatic/wellknown"
 	"io"
 	"net/http"
+	"os"
 	"strings"
 	"time"
+
+	"github.com/PubStatic/PubStatic/activityPub"
+	"github.com/PubStatic/PubStatic/wellknown"
 )
 
 var server = http.Server{}
@@ -57,6 +59,15 @@ func configureServer() {
 		w.Header().Set("Content-Type", "application/json")
 
 		w.Write(jsonData)
+	})
+
+	mux.HandleFunc("/pubstatic/icon", func(w http.ResponseWriter, r *http.Request) {
+		file, err := os.ReadFile("config/" + settings.ActivityPubSettings.ProfilePictureUrl)
+		if err != nil {
+			logger.Fatalf("Error reading icon file: %v", err)
+		}
+
+		w.Write(file)
 	})
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
