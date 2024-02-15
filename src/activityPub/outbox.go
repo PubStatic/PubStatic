@@ -39,7 +39,7 @@ func SentActivity(activity Activity, inbox url.URL, ownHost string, mongoDbConne
 	}
 
 	// Create signature
-	date := time.Now().UTC().Format(time.RFC1123)
+	date := time.Now().UTC().Format("Mon, 02 Jan 2006 15:04:05 GMT")
 
 	signedString := fmt.Sprintf("(request-target): post %s\nhost: %s\ndate: %s\ndigest: sha-256=%s", inbox.Path, inbox.Host, date, digest)
 
