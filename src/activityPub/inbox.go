@@ -43,13 +43,15 @@ func follow(activity Activity, connectionString string, actor Actor, ownHost str
 		return err
 	}
 
+	time := time.Now()
+
 	err = SendActivity(Activity{
 		Context: "https://www.w3.org/ns/activitystreams",
 		Id:      fmt.Sprintf("https://%s/accept/%s", ownHost, uuid.New()),
 		Type:    "Accept",
 		Actor:   fmt.Sprintf("https://%s", ownHost),
 		Object:  activity,
-		Published: time.Now(),
+		Published: &time,
 	}, *url, ownHost, connectionString)
 
 	if err != nil {
