@@ -74,7 +74,7 @@ func SentActivity(activity Activity, inbox url.URL, ownHost string, mongoDbConne
 		return err
 	}
 
-	if response.StatusCode != 200 {
+	if response.StatusCode != 200 && response.StatusCode != 202 {
 
 		defer response.Body.Close()
 
