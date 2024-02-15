@@ -115,11 +115,11 @@ func ImportPublicKeyPem(pemPublicKey string) (*rsa.PublicKey, error) {
 	return pubKey, nil
 }
 
-func ImportPrivateKeyPem(pemPublicKey string) (*rsa.PrivateKey, error) {
+func ImportPrivateKeyPem(pemPrivateKey string) (*rsa.PrivateKey, error) {
 	logger.Trace("Entered ImportPrivateKeyPem")
 
 	// Decode the PEM data
-	block, _ := pem.Decode([]byte(pemPublicKey))
+	block, _ := pem.Decode([]byte(pemPrivateKey))
 	if block == nil {
 		err := errors.New("could not decode byte array")
 

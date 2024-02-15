@@ -42,7 +42,7 @@ func follow(activity Activity, connectionString string, actor Actor, ownHost str
 		return err
 	}
 
-	err = SendActivity(Activity{
+	err = SentActivity(Activity{
 		Context: "https://www.w3.org/ns/activitystreams",
 		Id:      fmt.Sprintf("https://%s/accept/%s", ownHost, uuid.New()),
 		Type:    "Accept",

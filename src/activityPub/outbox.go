@@ -18,7 +18,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func SendActivity(activity Activity, inbox url.URL, ownHost string, mongoDbConnectionString string) error {
+func SentActivity(activity Activity, inbox url.URL, ownHost string, mongoDbConnectionString string) error {
 	logger.Trace("Sending activity")
 
 	// Create digest
@@ -89,7 +89,7 @@ func LoadPrivateKey(mongoConnectionString string) (*rsa.PrivateKey, error) {
 		return nil, err
 	}
 
-	privateKey, err := ImportPrivateKeyPem(fileContentPrivateKey.Key)
+	privateKey, err := ImportPrivateKeyPem(fileContentPrivateKey.Value)
 
 	if err != nil {
 		return nil, err
