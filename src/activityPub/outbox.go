@@ -19,7 +19,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func SentActivity(activity Activity, inbox url.URL, ownHost string, mongoDbConnectionString string) error {
+func SendActivity(activity Activity, inbox url.URL, ownHost string, mongoDbConnectionString string) error {
 	logger.Trace("Sending activity")
 
 	// Create digest
@@ -27,6 +27,8 @@ func SentActivity(activity Activity, inbox url.URL, ownHost string, mongoDbConne
 	if err != nil {
 		return err
 	}
+
+	logger.Debugf("JsonBody in SendActivity: %s", jsonBody)
 
 	digest := computeHash(string(jsonBody))
 
