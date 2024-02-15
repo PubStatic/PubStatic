@@ -5,7 +5,7 @@ import "time"
 type Activity struct {
 	Id        string     `json:"id"`
 	Type      string     `json:"type"`
-	Context   any        `json:"context"`
+	Context   any        `json:"@context"`
 	To        []string   `json:"to"`
 	Bto       []string   `json:"bto"`
 	Cc        []string   `json:"cc"`
