@@ -88,6 +88,8 @@ func configureServer() {
 			return
 		}
 
+		logger.Debugf("Body in /inbox: %s", body)
+
 		var activity activityPub.Activity
 
 		err = json.Unmarshal(body, &activity)
