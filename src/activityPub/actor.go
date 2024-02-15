@@ -37,18 +37,18 @@ func GetActor(host string, settings models.Settings, publicKeyPem string) Actor 
 }
 
 type Actor struct {
-	Context           interface{} `json:"@context"`
-	Type              string      `json:"type"`
-	Id                string      `json:"id"`
-	Outbox            string      `json:"outbox"`
-	Following         string      `json:"following"`
-	Followers         string      `json:"followers"`
-	Inbox             string      `json:"inbox"`
-	PreferredUsername string      `json:"preferredUsername"`
-	Name              string      `json:"name"`
-	Summary           string      `json:"summary"`
-	Icon              interface{} `json:"icon"`
-	PublicKey         PublicKey   `json:"publicKey"`
+	Context           any       `json:"@context"`
+	Type              string    `json:"type"`
+	Id                string    `json:"id"`
+	Outbox            string    `json:"outbox"`
+	Following         string    `json:"following"`
+	Followers         string    `json:"followers"`
+	Inbox             string    `json:"inbox"`
+	PreferredUsername string    `json:"preferredUsername"`
+	Name              string    `json:"name"`
+	Summary           string    `json:"summary"`
+	Icon              any       `json:"icon"`
+	PublicKey         PublicKey `json:"publicKey"`
 }
 
 type PublicKey struct {

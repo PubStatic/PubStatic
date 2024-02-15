@@ -30,7 +30,7 @@ func setup(connectionString string) {
 	logger.Info("Connected to MongoDB!")
 }
 
-func WriteMongo(database string, collectionName string, document interface{}, connectionString string) error {
+func WriteMongo(database string, collectionName string, document any, connectionString string) error {
 	setup(connectionString)
 	// Disconnect from MongoDB when program exits
 	defer func() {
@@ -52,7 +52,7 @@ func WriteMongo(database string, collectionName string, document interface{}, co
 	return nil
 }
 
-func ReadMongo[T any](database string, collectionName string, filter interface{}, connectionString string) (T, error) {
+func ReadMongo[T any](database string, collectionName string, filter any, connectionString string) (T, error) {
 	setup(connectionString)
 	// Disconnect from MongoDB when program exits
 	defer func() {

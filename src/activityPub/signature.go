@@ -86,7 +86,7 @@ func ImportPublicKeyPem(pemPublicKey string) (*rsa.PublicKey, error) {
 		return nil, err
 	}
 
-	var pubKeyInterface interface{}
+	var pubKeyInterface any
 	var err error
 
 	// Try to parse the key as PKIX
