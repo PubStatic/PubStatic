@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"time"
@@ -74,6 +75,19 @@ func SentActivity(activity Activity, inbox url.URL, ownHost string, mongoDbConne
 	}
 
 	if response.StatusCode != 200 {
+
+		defer response.Body.Close()
+
+		// Read the response body
+		body, err := io.ReadAll(io.Reader(response.Body))
+		if err != nil {
+			logger.Warn("Reading body failed after failed request")
+
+			return err
+		}
+
+		logger.Debugf("Body of failed request: %s", body)
+
 		return fmt.Errorf("sending activity failed with error code: %d", response.StatusCode)
 	}
 
