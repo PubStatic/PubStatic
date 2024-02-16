@@ -1,0 +1,27 @@
+meta {
+  name: SendUndo
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/inbox
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": "https://mastodon.online/cff90e27-635c-409b-a750-4912caa95257",
+    "type": "Undo",
+    "actor": "https://mastodon.online/users/lna_dev",
+    "object": {
+      "@context": "https://www.w3.org/ns/activitystreams",
+      "id": "https://mastodon.online/cff90e27-635c-409b-a750-4912caa95257",
+      "type": "Follow",
+      "actor": "https://mastodon.online/users/lna_dev",
+      "object": "https://pubstatic.lna-dev.net"
+    }
+  }
+}

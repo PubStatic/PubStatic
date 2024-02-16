@@ -31,14 +31,13 @@ func ReceiveActivity(activity Activity, header map[string][]string, host string,
 	case "Follow":
 		return follow(activity, connectionString, *actor, host)
 	case "Undo":
-		undo(activity)
+		return undo(activity, connectionString, *actor)
 	}
 
 	return nil
 }
 
 func follow(activity Activity, connectionString string, actor Actor, ownHost string) error {
-
 	count, err := repository.CountMongo[Activity]("Inbox", "Follow", bson.D{{"actor", actor.Id}}, connectionString)
 
 	if err != nil {
@@ -58,11 +57,11 @@ func follow(activity Activity, connectionString string, actor Actor, ownHost str
 	time := time.Now()
 
 	err = SendActivity(Activity{
-		Context: "https://www.w3.org/ns/activitystreams",
-		Id:      fmt.Sprintf("https://%s/accept/%s", ownHost, uuid.New()),
-		Type:    "Accept",
-		Actor:   fmt.Sprintf("https://%s", ownHost),
-		Object:  activity,
+		Context:   "https://www.w3.org/ns/activitystreams",
+		Id:        fmt.Sprintf("https://%s/accept/%s", ownHost, uuid.New()),
+		Type:      "Accept",
+		Actor:     fmt.Sprintf("https://%s", ownHost),
+		Object:    activity,
 		Published: &time,
 	}, *url, ownHost, connectionString)
 
@@ -75,6 +74,28 @@ func follow(activity Activity, connectionString string, actor Actor, ownHost str
 	return repository.WriteMongo("Inbox", "Follow", activity, connectionString)
 }
 
-func undo(activity Activity) {
+func undo(activity Activity, connectionString string, actor Actor) error {
+	logger.Trace("Entered undo")
 
+	// TODO Check if it is really a undo follow
+	
+	count, err := repository.CountMongo[Activity]("Inbox", "Follow", bson.D{{"actor", actor.Id}}, connectionString)
+
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return fmt.Errorf("cannot undo follow. follow does not exist. actorId: %s", actor.Id)
+	}
+
+	deleteCount, err := repository.DeleteMongo("Inbox", "Follow", bson.D{{"actor", actor.Id}}, connectionString)
+
+	if err != nil {
+		return err
+	}
+
+	logger.Debugf("Deleted: %d items", deleteCount)
+
+	return nil
 }

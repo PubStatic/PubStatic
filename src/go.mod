@@ -19,6 +19,7 @@ require (
 require (
 	github.com/google/uuid v1.6.0
 	github.com/klauspost/compress v1.17.6 // indirect
+	github.com/mitchellh/mapstructure v1.5.0
 	go.mongodb.org/mongo-driver v1.13.1
 	golang.org/x/sys v0.17.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0

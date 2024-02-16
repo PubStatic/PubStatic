@@ -91,3 +91,22 @@ func CountMongo[T any](database string, collectionName string, filter any, conne
 
 	return result, nil
 }
+
+func DeleteMongo(database string, collectionName string, filter any, connectionString string) (int64, error) {
+	setup(connectionString)
+	// Disconnect from MongoDB when program exits
+	defer func() {
+		if discErr := client.Disconnect(context.Background()); discErr != nil {
+			log.Fatal(discErr)
+		}
+	}()
+
+	collection := client.Database(database).Collection(collectionName)
+
+	result, err := collection.DeleteMany(context.Background(), filter)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.DeletedCount, nil
+}
