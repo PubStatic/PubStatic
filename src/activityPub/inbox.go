@@ -8,6 +8,7 @@ import (
 
 	"github.com/PubStatic/PubStatic/repository"
 	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func ReceiveActivity(activity Activity, header map[string][]string, host string, connectionString string) error {
@@ -37,6 +38,17 @@ func ReceiveActivity(activity Activity, header map[string][]string, host string,
 }
 
 func follow(activity Activity, connectionString string, actor Actor, ownHost string) error {
+
+	count, err := repository.CountMongo[Activity]("Inbox", "Follow", bson.D{{"actor", actor.Id}}, connectionString)
+
+	if err != nil {
+		return err
+	}
+
+	if count != 0 {
+		return fmt.Errorf("follow for this actor already exists. actorId: %s", actor.Id)
+	}
+
 	url, err := url.Parse(actor.Inbox)
 
 	if err != nil {
